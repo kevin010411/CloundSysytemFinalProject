@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<head>
+
+</head>
+<body>
+    <p>Hello World</p>
+    <p id="test_table"></p>
+    <script>
+        let table = document.getElementById("test_table")
+        let table_content = table.innerHTML
+        for(let i=0;i<10;++i)
+        {
+            table_content += i.toString()+" "
+        }
+        table.innerHTML = table_content
+        console.log(table_content)
+    </script>
+</body>
