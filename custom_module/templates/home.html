@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<head>
+
+</head>
+<body>
+    <p>Hello World</p>
+    <p id="test_table"></p>
+    <script>
+        let table = document.getElementById("test_table")
+        let table_content = table.innerHTML
+        for(let i=0;i<20;++i)
+        {
+            table_content += i.toString()+" "
+        }
+        table.innerHTML = table_content
+        console.log(table_content)
+    </script>
+    <form id="register_user">
+        <label for="user_name">UserName:</label>
+        <input id='user_name' type='text' name='user_name'>
+        <label for="password">Password:</label>
+        <input id='password' type='text' name='password'>
+        <input type='submit' value="註冊">
+    </form>
+    <script>
+        document.getElementById("register_user").addEventListener("submit",async function(event){
+            event.preventDefault()
+            const formData = new FormData(this)
+            const data = Object.fromEntries(formData.entries())
+            
+            try{
+                const response = await fetch("/api/register_user",{
+                    method:'POST',
+                    headers:{
+                        "content-Type":"application/json"
+                    },
+                    body:JSON.stringify(data),
+                })
+
+                const result = await response.json()
+                console.log("提交成功")
+            }
+            catch(error){
+                console.log(`Error:${error}`)
+
+            }
+        }
+    )
+    </script>
+    <br>
+    <a href="./user_list">前往User List</a>
+</body>

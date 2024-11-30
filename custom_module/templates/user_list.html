@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        td{
+            padding:5px
+        }
+    </style>
+</head>
+<body>
+    <p>User List</p>
+    <a href="../">版回首頁</a>
+    {%if user_list%}
+    <table border=1 border-collapse>
+        {%for user in user_list%}
+            <tr>
+                <td>id:{{user.id}}</td> 
+                <td>帳號:{{user.name}}</td>  
+                <td>密碼:{{user.password}}</td>  
+            </tr>
+            <br>
+        {%endfor%}
+    </table>
+    {%endif%}
+</body>
