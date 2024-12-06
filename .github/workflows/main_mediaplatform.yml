@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.10'
 
       - name: Create and start virtual environment
         run: |
@@ -66,4 +66,4 @@ jobs:
         with:
           app-name: 'MediaPlatform'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_60F33B068EC24F64842ABC05321B49F8 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_29F61AE9BA8B47E5BE0F2A2BA5296C98 }}
