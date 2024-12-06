@@ -66,4 +66,4 @@ jobs:
         with:
           app-name: 'MediaPlatform'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_AEC7D96AB806442DADA34FDD54A6BE9B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_60F33B068EC24F64842ABC05321B49F8 }}
