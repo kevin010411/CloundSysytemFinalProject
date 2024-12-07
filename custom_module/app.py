@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 import psycopg2
 
 app = Flask(__name__)
@@ -14,8 +14,9 @@ connection_string = os.getenv('AZURE_POSTGRESQL_CONNECTIONSTRING_T')
 connection_string_temp = os.getenv('AZURE_POSTGRESQL_CONNECTIONSTRING')
 try:
     connection = psycopg2.connect(connection_string_temp)
+    log = f"訪問成功{connection_string_temp}"
 except:
-    print(f"不能訪問{connection_string_temp}")
+    log = f"不能訪問{connection_string_temp}"
 
 if connection_string is None:
     # 這是FU的本地postgres
@@ -25,3 +26,10 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = connection_string
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+
+app.route("/log")
+
+
+def display_log():
+    return render_template("log.html", log=log)
