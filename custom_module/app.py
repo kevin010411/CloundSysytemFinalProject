@@ -14,9 +14,9 @@ connection_string = os.getenv('AZURE_POSTGRESQL_CONNECTIONSTRING')
 
 try:
     connection = psycopg2.connect(connection_string)
-    log = f"訪問成功{connection_string}"
+    log = f"psycopg2訪問成功{connection_string}"
 except:
-    log = f"不能訪問{connection_string}"
+    log = f"psycopg2不能訪問{connection_string}"
 
 if connection_string is None:
     # 這是FU的本地postgres
@@ -35,4 +35,4 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 @app.route("/log")
 def display_log():
-    return render_template("log.html", logs=[log, "測試log畫面"])
+    return render_template("log.html", logs=[log, connection_string, "測試log畫面"])
