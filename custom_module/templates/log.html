@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Application Logs</h1>
+    {% if logs %}
+        <pre>
+        {% for log in logs %}
+            {{ log.strip() }}
+        {% endfor %}
+        </pre>
+    {% else %}
+        <p>No logs available.</p>
+    {% endif %}
+</body>
+</html>
