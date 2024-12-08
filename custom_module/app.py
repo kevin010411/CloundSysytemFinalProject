@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template
 import psycopg2
 
+
 app = Flask(__name__)
 
 UPLOAD_FOLDER = "./static/uploads"
@@ -34,4 +35,6 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 @app.route("/log")
 def display_log():
+    from custom_module.router import get_files
+    get_files()
     return render_template("log.html", logs=[log, connection_string, "測試log畫面"])
