@@ -2,8 +2,11 @@ import os
 from flask import Flask, render_template
 import psycopg2
 
+STATIC_FOLDER = os.getenv(
+    'STATIC_DATA_PATH') if os.getenv(
+    'STATIC_DATA_PATH') is not None else "C:/Users/kevin/Pictures/相片/頭貼"
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=STATIC_FOLDER)
 
 UPLOAD_FOLDER = "./static/uploads"
 
