@@ -26,7 +26,6 @@ else:
     param = dict(item.split("=")
                  for item in connection_string.split(" "))
     connection_string = f'postgresql://{param["user"]}:{param["password"]}@{param["host"]}:{param["port"]}/{param["dbname"]}?sslmode={param["sslmode"]}'
-    print(connection_string)
     app.config['SQLALCHEMY_DATABASE_URI'] = connection_string
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
