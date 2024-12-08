@@ -4,7 +4,7 @@ import psycopg2
 
 STATIC_FOLDER = os.getenv(
     'STATIC_DATA_PATH') if os.getenv(
-    'STATIC_DATA_PATH') is not None else "C:/Users/kevin/Pictures/相片/頭貼"
+    'STATIC_DATA_PATH') is not None else "static"
 
 app = Flask(__name__, static_folder=STATIC_FOLDER)
 
@@ -40,4 +40,4 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 def display_log():
     from custom_module.router import get_files
     get_files()
-    return render_template("log.html", logs=[log, connection_string, "測試log畫面"])
+    return render_template("log.html", logs=[log, STATIC_FOLDER, "測試log畫面"])
