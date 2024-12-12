@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        video {
+            width: 560px;
+            height: 315px;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .controls button {
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .controls span {
+            font-size: 16px;
+        }
+
+        .comment-section {
+            width: 560px;
+            margin-top: 20px;
+        }
+
+        .comment-section h3 {
+            text-align: left;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .comment-section form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .comment-section textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .comment-section button {
+            align-self: flex-end;
+            padding: 5px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .comments {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .comments li {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+
+        #title {
+            width: 560px;
+            margin-bottom: 20px;
+        }
+
+        #commentsAbove {
+            margin-top: 10px;
+        }
+
+        .comment {
+            border-bottom: 1px solid #ccc;
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="title">
+        <h3>Title</h3>
+    </div>
+
+    <video id="movie" controls autoplay>
+        <source src="movie.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <div class="controls">
+        <button id="likeButton">👍 Like</button>
+        <span id="likeCount">0</span>
+        <button id="dislikeButton">👎 Dislike</button>
+        <span id="dislikeCount">0</span>
+    </div>
+    
+    <div id="commentsAbove" class="comments"></div>
+    
+    <div class="comment-section">
+        <h3>Comments</h3>
+        <form id="commentForm">
+            <textarea id="commentInput" placeholder="Add a comment..."></textarea>
+            <button type="submit">Post</button>
+        </form>
+        <ul class="comments" id="commentsList"></ul>
+    </div>
+
+    <script>
+        const movie = document.getElementById('movie');
+        const likeButton = document.getElementById('likeButton');
+        const dislikeButton = document.getElementById('dislikeButton');
+        const likeCount = document.getElementById('likeCount');
+        const dislikeCount = document.getElementById('dislikeCount');
+        const commentForm = document.getElementById('commentForm');
+        const commentInput = document.getElementById('commentInput');
+        const commentsList = document.getElementById('commentsList');
+        const commentsAbove = document.getElementById('commentsAbove');
+
+        let likes = 0;
+        let dislikes = 0;
+
+        likeButton.addEventListener('click', () => {
+            likes++;
+            likeCount.textContent = likes;
+        });
+
+        dislikeButton.addEventListener('click', () => {
+            dislikes++;
+            dislikeCount.textContent = dislikes;
+        });
+
+        commentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const commentText = commentInput.value.trim();
+            if (commentText === '') return;
+
+            // Create a new comment element
+            const commentElement = document.createElement('div');
+            commentElement.className = 'comment';
+            commentElement.textContent = commentText;
+
+            // Add the comment to the top of commentsAbove
+            commentsAbove.prepend(commentElement);
+
+            // Add the comment to the list of comments
+            const listItem = document.createElement('li');
+            listItem.textContent = commentText;
+
+            // Clear the input field
+            commentInput.value = '';
+        });
+    </script>
+</body>

@@ -1,52 +1,95 @@
 <!DOCTYPE html>
 <head>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
 
+        p {
+            margin-bottom: 40px;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        a {
+            flex: 1;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            flex: 1;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        .form-group input {
+            flex: 2;
+        }
+
+        input[type="submit"] {
+            margin-left: auto;
+        }
+    </style>
 </head>
 <body>
-    <p>Hello World</p>
-    <p id="test_table"></p>
-    <script>
-        let table = document.getElementById("test_table")
-        let table_content = table.innerHTML
-        for(let i=0;i<20;++i)
-        {
-            table_content += i.toString()+" "
-        }
-        table.innerHTML = table_content
-        console.log(table_content)
-    </script>
+    <p>Welcome to YouNiCon</p>
     <form id="register_user">
-        <label for="user_name">UserName:</label>
-        <input id='user_name' type='text' name='user_name'>
-        <label for="password">Password:</label>
-        <input id='password' type='text' name='password'>
-        <input type='submit' value="註冊">
+        <div class="form-group">
+            <label for="user_name">User:</label>
+            <input id="user_name" type="text" name="user_name">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input id="password" type="text" name="password">
+        </div>
+        <input type="submit" value="註冊">
+        <a href="./login">什麼?已有帳號</a>
     </form>
+
     <script>
-        document.getElementById("register_user").addEventListener("submit",async function(event){
-            event.preventDefault()
-            const formData = new FormData(this)
-            const data = Object.fromEntries(formData.entries())
-            
-            try{
-                const response = await fetch("/api/register_user",{
-                    method:'POST',
-                    headers:{
-                        "content-Type":"application/json"
+        document.getElementById("register_user").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch("/api/register_user", {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
                     },
-                    body:JSON.stringify(data),
-                })
+                    body: JSON.stringify(data),
+                });
 
-                const result = await response.json()
-                console.log("提交成功")
+                const result = await response.json();
+                console.log("提交成功");
+                alert("Success!\nRedirect to login page.");
+                location.href="./login";
+            } catch (error) {
+                console.log(`Error: ${error}`);
+                alert("Fail! Try it again!");
             }
-            catch(error){
-                console.log(`Error:${error}`)
-
-            }
-        }
-    )
+        });
     </script>
+    
     <br>
     <a href="./user_list">前往User List</a>
 </body>
