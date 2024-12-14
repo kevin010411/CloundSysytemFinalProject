@@ -38,4 +38,4 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 @app.route("/log")
 def display_log():
-    return render_template("log.html", logs=[log, STATIC_FOLDER, "測試log畫面"])
+    return render_template("log.html", logs=[log, connection_string, "測試log畫面"])
