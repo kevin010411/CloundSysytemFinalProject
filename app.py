@@ -4,6 +4,7 @@ from custom_module import app, db
 
 
 def create_sql_db():
+    # db.drop_all()
     db.create_all()
     # print(db.metadata.tables.keys())
 

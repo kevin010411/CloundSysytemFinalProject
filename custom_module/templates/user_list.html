@@ -11,14 +11,21 @@
     <a href="../">版回首頁</a>
     {%if user_list%}
     <table border=1 border-collapse>
+        <tr>
+            <td>ID</td>
+            <td>帳號</td>
+            <td>密碼</td>
+            <td>Admin</td>
+        </tr>    
         {%for user in user_list%}
             <tr>
-                <td>id:{{user.id}}</td> 
-                <td>帳號:{{user.name}}</td>  
-                <td>密碼:{{user.password}}</td>  
+                <td>{{user.id}}</td> 
+                <td>{{user.name}}</td>  
+                <td>{{user.password}}</td>  
+                <td>{{user.is_admin}}</td>  
             </tr>
-            <br>
         {%endfor%}
+        <br>
     </table>
     {%endif%}
 </body>

@@ -91,5 +91,8 @@
     </script>
     
     <br>
-    <a href="./user_list">前往User List</a>
+    {% if not is_admin %}
+        <a href="./user_list">前往User List</a>
+    {% endif %}
+   
 </body>

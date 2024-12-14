@@ -31,5 +31,4 @@ def register_user():
     session = db.session
     session.add(new_user)
     session.commit()
-    print(data)
     return {"status": "Good"}
