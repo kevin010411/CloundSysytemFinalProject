@@ -12,13 +12,13 @@ def create_sql_db():
 @app.route('/admin/dp/create_all')
 def upload_form():
     db.create_all()
-    return render_template('dp create successfully')
+    return 'dp create successfully'
 
 
 @app.route('/admin/dp/drop_all')
 def upload_form():
     db.drop_all()
-    return render_template('dp delete successfully')
+    return 'dp delete successfully'
 
 
 @app.route('/upload')
