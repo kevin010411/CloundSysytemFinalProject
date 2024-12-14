@@ -1,8 +1,10 @@
+from custom_module import User, db, app
 import json
-from custom_module import db
-from custom_module import User, db
+import sys
 
-if __name__ == "__main__":
+
+@app.route("/api/admin/test")
+def read_csv():
 
     data = dict(
         user_name="admin",
