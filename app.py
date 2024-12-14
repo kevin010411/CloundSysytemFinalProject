@@ -10,13 +10,13 @@ def create_sql_db():
 
 
 @app.route('/admin/dp/create_all')
-def upload_form():
+def dp_create_all():
     db.create_all()
     return 'dp create successfully'
 
 
 @app.route('/admin/dp/drop_all')
-def upload_form():
+def dp_drop_all():
     db.drop_all()
     return 'dp delete successfully'
 
