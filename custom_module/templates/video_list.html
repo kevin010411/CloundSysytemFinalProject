@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video List</title>
+    <style>
+        td {
+            padding: 5px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <p>Video List</p>
+    <a href="../">返回首頁</a>
+    {% if video_list %}
+    <table>
+        <tr>
+            <th>封面圖</th>
+            <th>ID</th>
+            <th>名稱</th>
+            <th>影片路徑</th>
+            <th>封面路徑</th>
+            <th>觀看次數</th>
+            <th>按讚次數</th>
+            <th>踩讚次數</th>
+            <th>收入</th>
+            <th>標籤</th>
+            <th>描述</th>
+        </tr>
+        {% for video in video_list %}
+        <tr>
+            <td><img width="192" hegiht="108" src={{url_for('static', filename="cover/"~video.cover_img_name~".jpg")}}></td>
+            <td>{{ video.id }}</td>
+            <td>{{ video.title }}</td>
+            <td>{{ video.video_name }}</td>
+            <td>{{ video.cover_img_name }}</td>
+            <td>{{ video.watch_num }}</td>
+            <td>{{ video.good_num }}</td>
+            <td>{{ video.bad_num }}</td>
+            <td>{{ video.coin_num }}</td>
+            <td>{{ video.tag }}</td>
+            <td>{{ video.description }}</td>
+            <td><a href="./video/{{video.id}}">前往User List</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No videos found.</p>
+    {% endif %}
+</body>
+</html>

@@ -9,18 +9,6 @@ def create_sql_db():
     # print(db.metadata.tables.keys())
 
 
-@app.route('/admin/dp/create_all')
-def dp_create_all():
-    db.create_all()
-    return 'dp create successfully'
-
-
-@app.route('/admin/dp/drop_all')
-def dp_drop_all():
-    db.drop_all()
-    return 'dp delete successfully'
-
-
 @app.route('/upload')
 def upload_form():
     return render_template('upload.html')

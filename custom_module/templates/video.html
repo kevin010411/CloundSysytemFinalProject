@@ -91,19 +91,32 @@
 </head>
 <body>
     <div id="title">
-        <h3>Title</h3>
+        <h3>{{video_data.title}}</h3>
     </div>
 
     <video id="movie" controls autoplay>
-        <source src="movie.mp4" type="video/mp4">
+        <source src={{url_for("static",filename="video/"~video_data.video_name)}} type="video/mp4">
         Your browser does not support the video tag.
     </video>
     
     <div class="controls">
+        <span id="watchCount">觀看次數:{{video_data.watch_num}}</span>
         <button id="likeButton">👍 Like</button>
-        <span id="likeCount">0</span>
+        <span id="likeCount">{{video_data.good_num}}</span>
         <button id="dislikeButton">👎 Dislike</button>
-        <span id="dislikeCount">0</span>
+        <span id="dislikeCount">{{video_data.bad_num}}</span>
+        <button id="coinButton">💰 Coin</button>
+        <span id="coinCount">{{video_data.coin_num}}</span>
+        <button id="shareButton">🚻 Share</button>
+        <span id="shareCount">{{video_data.share_num}}</span>
+    </div>
+    <br>
+    <div>
+        Tag: {{video_data.tag}}<br>
+        <br>
+        描述: <br>
+        <br>
+        {{video_data.description}}
     </div>
     
     <div id="commentsAbove" class="comments"></div>
@@ -118,49 +131,46 @@
     </div>
 
     <script>
-        const movie = document.getElementById('movie');
         const likeButton = document.getElementById('likeButton');
-        const dislikeButton = document.getElementById('dislikeButton');
-        const likeCount = document.getElementById('likeCount');
-        const dislikeCount = document.getElementById('dislikeCount');
-        const commentForm = document.getElementById('commentForm');
-        const commentInput = document.getElementById('commentInput');
-        const commentsList = document.getElementById('commentsList');
-        const commentsAbove = document.getElementById('commentsAbove');
+    const dislikeButton = document.getElementById('dislikeButton');
+    const coinButton = document.getElementById('coinButton');
+    const shareButton = document.getElementById('shareButton');
 
-        let likes = 0;
-        let dislikes = 0;
+    const videoId = {{ video_data.id }}; // 動態插入影片的 ID
+    const updateUrl = `/update/${videoId}`;
 
-        likeButton.addEventListener('click', () => {
-            likes++;
-            likeCount.textContent = likes;
-        });
+    const updateCount = async (action, element) => {
+        try {
+            const response = await fetch(updateUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ action }),
+            });
 
-        dislikeButton.addEventListener('click', () => {
-            dislikes++;
-            dislikeCount.textContent = dislikes;
-        });
+            if (!response.ok) {
+                throw new Error('Failed to update');
+            }
 
-        commentForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+            const data = await response.json();
+            if (action === 'like') {
+                document.getElementById('likeCount').textContent = data.good_num;
+            } else if (action === 'dislike') {
+                document.getElementById('dislikeCount').textContent = data.bad_num;
+            } else if (action === 'coin') {
+                document.getElementById('coinCount').textContent = data.coin_num;
+            } else if (action === 'share') {
+                document.getElementById('shareCount').textContent = data.share_num;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 
-            const commentText = commentInput.value.trim();
-            if (commentText === '') return;
-
-            // Create a new comment element
-            const commentElement = document.createElement('div');
-            commentElement.className = 'comment';
-            commentElement.textContent = commentText;
-
-            // Add the comment to the top of commentsAbove
-            commentsAbove.prepend(commentElement);
-
-            // Add the comment to the list of comments
-            const listItem = document.createElement('li');
-            listItem.textContent = commentText;
-
-            // Clear the input field
-            commentInput.value = '';
-        });
+    likeButton.addEventListener('click', () => updateCount('like'));
+    dislikeButton.addEventListener('click', () => updateCount('dislike'));
+    coinButton.addEventListener('click', () => updateCount('coin'));
+    shareButton.addEventListener('click', () => updateCount('share'));
     </script>
 </body>
