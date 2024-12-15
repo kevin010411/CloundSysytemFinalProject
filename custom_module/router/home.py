@@ -5,10 +5,14 @@ from flask import render_template, request, redirect, session
 from custom_module import User, db
 
 
-@app.route("/")
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route("/register")
 def index():
     is_admin = session.get('is_admin', False)
-    return render_template("home.html", is_admin=is_admin)
+    return render_template("register.html", is_admin=is_admin)
 
 
 @app.route("/user_list")
