@@ -18,7 +18,11 @@
         <input type="text" placeholder="search video">
         <button onclick="search()">search</button>
     </form>
+    {% if login %}
+    <a href="/"><button>Logout</button></a>
+    {% else %}
     <a href="/login"><button>Login</button></a>
+    {% endif %}
     </div>
     <br>
     <div class="container">
@@ -27,7 +31,7 @@
                 <div class="video">
                     {% for video in video_data %}
                     <a href="/video/{{video.id}}"><img width="192" hegiht="108" src={{url_for('static', filename="cover/"~video.cover_img_name~".jpg")}}></a>
-                    <p>{{ video.title }}</p>
+                    <a href="/video/{{video.id}}"><p>{{ video.title }}</p></a>
                     {% endfor %}
                 </div>
             </div>
