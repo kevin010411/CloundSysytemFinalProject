@@ -7,7 +7,9 @@ from custom_module import db
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    from custom_module import Video
+    video_data = db.session.query(Video).all()
+    return render_template('index.html',video_data=video_data)
 
 @app.route("/register")
 def index():
