@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, Text
 from flask_sqlalchemy import SQLAlchemy
 
 from custom_module import app
@@ -18,10 +18,13 @@ class User(db.Model):
 class Video(db.Model):
     __tablename__ = "video"
     id = Column(Integer, primary_key=True, unique=True)
-    name = Column(String(64), unique=True, nullable=False)
-    video_position = Column(String(128), nullable=False)
-    cover_img_position = Column(String(128), nullable=False)
+    title = Column(Text, unique=True, nullable=False)
+    video_name = Column(String(255), nullable=False)
+    cover_img_name = Column(String(255), nullable=False)
     watch_num = Column(Integer, default=0)
     good_num = Column(Integer, default=0)
     bad_num = Column(Integer, default=0)
-    revenue = Column(Integer, default=0)
+    share_num = Column(Integer, default=0)
+    coin_num = Column(Integer, default=0)
+    tag = Column(String(255), nullable=True)
+    description = Column(Text, nullable=True)

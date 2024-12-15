@@ -1,8 +1,8 @@
 from custom_module import app
 from sqlalchemy import select
-from flask import render_template, request, redirect, session
+from flask import jsonify, render_template, request, redirect, session
 
-from custom_module import User, db
+from custom_module import db
 
 
 @app.route('/')
@@ -17,8 +17,16 @@ def index():
 
 @app.route("/user_list")
 def user_list():
+    from custom_module import User
     user_data = User.query.all()
     return render_template("user_list.html", user_list=user_data)
+
+
+@app.route("/video_list")
+def video_list():
+    from custom_module import Video
+    video_data = Video.query.all()
+    return render_template("video_list.html", video_list=video_data)
 
 
 @app.route('/login', methods=['GET'])
@@ -28,6 +36,7 @@ def login_get():
 
 @app.route('/login', methods=['POST'])
 def login_post():
+    from custom_module import User
     username = request.form['username']
     password = request.form['password']
     db_session = db.session
@@ -41,6 +50,36 @@ def login_post():
     return render_template('login.html', error='Invalid username or password')
 
 
-@app.route('/video', methods=['GET'])
-def video_get():
-    return render_template('video.html')
+@app.route('/video/<video_id>', methods=['GET'])
+def video_get(video_id):
+    from custom_module import Video
+    video_data = db.session.query(Video).filter_by(id=video_id).first()
+    return render_template('video.html', video_data=video_data)
+
+
+@app.route('/update/<int:video_id>', methods=['POST'])
+def update_video(video_id):
+    from custom_module import Video
+    video = Video.query.get(video_id)
+    if not video:
+        return jsonify({'error': 'Video not found'}), 404
+
+    action = request.json.get('action')
+    if action == 'like':
+        video.good_num += 1
+    elif action == 'dislike':
+        video.bad_num += 1
+    elif action == 'coin':
+        video.coin_num += 1
+    elif action == 'share':
+        video.share_num += 1
+    else:
+        return jsonify({'error': 'Invalid action'}), 400
+
+    db.session.commit()
+    return jsonify({
+        'good_num': video.good_num,
+        'bad_num': video.bad_num,
+        'coin_num': video.coin_num,
+        'share_num': video.share_num
+    })
