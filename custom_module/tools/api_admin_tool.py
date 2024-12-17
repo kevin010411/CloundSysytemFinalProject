@@ -1,7 +1,28 @@
+import random
 from custom_module import Video, db, app
 import csv
 
 from custom_module.table.main_table import User
+
+
+def generate_usernames(count=10):
+    # 名字的組成部分
+    first_parts = ["Happy", "Sad", "Cool", "Smart",
+                   "Shiny", "Angry", "Lazy", "Brave", "Funny", "Crazy"]
+    second_parts = ["Cat", "Dog", "Tiger", "Panda",
+                    "Lion", "Bear", "Fox", "Wolf", "Koala", "Monkey"]
+    numbers = list(range(100, 999))  # 三位數字
+
+    # 組合名字
+    usernames = []
+    for _ in range(count):
+        first = random.choice(first_parts)
+        second = random.choice(second_parts)
+        number = random.choice(numbers)
+        username = f"{first}{second}{number}"
+        usernames.append(username)
+
+    return usernames
 
 
 @app.route("/api/admin/read_item_info", methods=["GET"])
@@ -33,7 +54,7 @@ def read_item_info():
     return "Admin add to User Table"
 
 
-@app.route("/api/admin/create_user", methods=["GET"])
+@app.route("/api/admin/create_admin_user", methods=["GET"])
 def create_admin_user():
     data = dict(
         user_name="admin",
@@ -47,6 +68,7 @@ def create_admin_user():
     session = db.session
     session.add(new_user)
     session.commit()
+    return "create a admin user"
 
 
 @app.route('/api/admin/dp/create_all')

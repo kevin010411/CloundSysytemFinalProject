@@ -132,45 +132,123 @@
 
     <script>
         const likeButton = document.getElementById('likeButton');
-    const dislikeButton = document.getElementById('dislikeButton');
-    const coinButton = document.getElementById('coinButton');
-    const shareButton = document.getElementById('shareButton');
+        const dislikeButton = document.getElementById('dislikeButton');
+        const coinButton = document.getElementById('coinButton');
+        const shareButton = document.getElementById('shareButton');
 
-    const videoId = {{ video_data.id }}; // 動態插入影片的 ID
-    const updateUrl = `/update/${videoId}`;
+        const videoId = {{ video_data.id }}; // 動態插入影片的 ID
+        const updateUrl = `/update/${videoId}`;
 
-    const updateCount = async (action, element) => {
-        try {
-            const response = await fetch(updateUrl, {
+        const updateCount = async (action, element) => {
+            try {
+                const response = await fetch(updateUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ action }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update');
+                }
+
+                const data = await response.json();
+                if (action === 'like') {
+                    document.getElementById('likeCount').textContent = data.good_num;
+                } else if (action === 'dislike') {
+                    document.getElementById('dislikeCount').textContent = data.bad_num;
+                } else if (action === 'coin') {
+                    document.getElementById('coinCount').textContent = data.coin_num;
+                } else if (action === 'share') {
+                    document.getElementById('shareCount').textContent = data.share_num;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        likeButton.addEventListener('click', () => updateCount('like'));
+        dislikeButton.addEventListener('click', () => updateCount('dislike'));
+        coinButton.addEventListener('click', () => updateCount('coin'));
+        shareButton.addEventListener('click', () => updateCount('share'));
+
+        const commentsList = document.getElementById('commentsList');
+
+        // 加載留言
+        async function loadComments() {
+            const response = await fetch(`/api/comments/${videoId}`);
+            const comments = await response.json();
+
+            commentsList.innerHTML = '';
+            renderComments(comments, commentsList);
+        }
+
+        // 渲染巢狀留言
+        function renderComments(comments, container) {
+            comments.forEach(comment => {
+                const commentElement = document.createElement('li');
+                commentElement.innerHTML = `
+                    <div>
+                        <p><strong>${comment.user_name}</strong>: ${comment.content}</p>
+                        <button class="reply-button" data-id="${comment.id}">Reply</button>
+                        <ul class="replies"></ul>
+                    </div>
+                `;
+                container.appendChild(commentElement);
+
+                const replyButton = commentElement.querySelector('.reply-button');
+                const repliesContainer = commentElement.querySelector('.replies');
+
+                replyButton.addEventListener('click', () => {
+                    const replyInput = document.createElement('textarea');
+                    replyInput.placeholder = 'Add a reply...';
+                    const replySubmit = document.createElement('button');
+                    replySubmit.textContent = 'Post Reply';
+
+                    replySubmit.addEventListener('click', async () => {
+                        const content = replyInput.value.trim();
+                        if (content) {
+                            await postComment(videoId, content, comment.id);
+                            replyInput.remove();
+                            replySubmit.remove();
+                            loadComments(); // 重新加載留言
+                        }
+                    });
+
+                    commentElement.appendChild(replyInput);
+                    commentElement.appendChild(replySubmit);
+                });
+
+                if (comment.replies) {
+                    renderComments(comment.replies, repliesContainer);
+                }
+            });
+        }
+
+        // 新增留言
+        async function postComment(videoId, content, parentId = null) {
+            await fetch(`/api/comments/${videoId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ action }),
+                body: JSON.stringify({ content, parent_id: parentId, user_name: 'Anonymous' }),
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to update');
-            }
-
-            const data = await response.json();
-            if (action === 'like') {
-                document.getElementById('likeCount').textContent = data.good_num;
-            } else if (action === 'dislike') {
-                document.getElementById('dislikeCount').textContent = data.bad_num;
-            } else if (action === 'coin') {
-                document.getElementById('coinCount').textContent = data.coin_num;
-            } else if (action === 'share') {
-                document.getElementById('shareCount').textContent = data.share_num;
-            }
-        } catch (error) {
-            console.error('Error:', error);
         }
-    };
 
-    likeButton.addEventListener('click', () => updateCount('like'));
-    dislikeButton.addEventListener('click', () => updateCount('dislike'));
-    coinButton.addEventListener('click', () => updateCount('coin'));
-    shareButton.addEventListener('click', () => updateCount('share'));
+        // 初始化
+        document.getElementById('commentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const commentInput = document.getElementById('commentInput');
+            const content = commentInput.value.trim();
+            if (content) {
+                await postComment(videoId, content);
+                commentInput.value = '';
+                loadComments();
+            }
+        });
+
+        loadComments();
     </script>
 </body>

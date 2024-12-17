@@ -1,4 +1,5 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, Text
+import datetime
+from sqlalchemy import Column, ForeignKey, DateTime, Integer, String, Boolean, Text
 from flask_sqlalchemy import SQLAlchemy
 
 from custom_module import app
@@ -28,3 +29,18 @@ class Video(db.Model):
     coin_num = Column(Integer, default=0)
     tag = Column(String(255), nullable=True)
     description = Column(Text, nullable=True)
+
+
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(Integer, primary_key=True, autoincrement=True)
+    video_id = db.Column(Integer, nullable=False)  # 對應影片 ID
+    parent_id = db.Column(Integer, ForeignKey(
+        'comments.id'), nullable=True)  # 父留言的 ID
+    content = db.Column(Text, nullable=False)  # 留言內容
+    created_at = db.Column(DateTime, default=str(
+        datetime.datetime.now()))  # 留言時間
+    user_name = db.Column(String(100), nullable=False)  # 留言者名稱
+
+    # 父留言關聯
+    parent = db.relationship('Comment', remote_side=[id], backref='replies')
