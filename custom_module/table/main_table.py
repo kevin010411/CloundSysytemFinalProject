@@ -20,7 +20,7 @@ class Video(db.Model):
     __tablename__ = "video"
     id = Column(Integer, primary_key=True, unique=True)
     title = Column(Text, unique=True, nullable=False)
-    #author=Column(Integer, nullable=False) !!!!!!!!!!!!!!!!!!!!!important!!!!!!!!!!!!!!!!!!!
+    author = Column(Integer, nullable=False)
     video_name = Column(String(255), nullable=False)
     cover_img_name = Column(String(255), nullable=False)
     watch_num = Column(Integer, default=0)

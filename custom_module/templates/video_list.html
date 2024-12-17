@@ -30,6 +30,7 @@
             <th>封面圖</th>
             <th>ID</th>
             <th>名稱</th>
+            <th>作者ID</th>
             <th>影片路徑</th>
             <th>封面路徑</th>
             <th>觀看次數</th>
@@ -44,6 +45,7 @@
             <td><img width="192" hegiht="108" src={{url_for('static', filename="cover/"~video.cover_img_name~".jpg")}}></td>
             <td>{{ video.id }}</td>
             <td>{{ video.title }}</td>
+            <td>{{ video.author }}</td>
             <td>{{ video.video_name }}</td>
             <td>{{ video.cover_img_name }}</td>
             <td>{{ video.watch_num }}</td>

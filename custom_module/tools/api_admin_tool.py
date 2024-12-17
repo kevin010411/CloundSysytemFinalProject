@@ -1,8 +1,9 @@
+from custom_module import User
 import random
-from custom_module import Video, db, app
-import csv
 
-from custom_module.table.main_table import User
+from flask import request
+from custom_module import Video, User, db, app
+import csv
 
 
 def generate_usernames(count=10):
@@ -25,13 +26,38 @@ def generate_usernames(count=10):
     return usernames
 
 
+@app.route("/api/admin/create_dummy_user", methods=["GET"])
+def create_dummy_user():
+    counts = request.args.get("counts", default=10, type=int)
+    create_admin_user()
+    username_list = generate_usernames(counts)
+    user_list = []
+    for username in username_list:
+        password = "admin"
+        existing_user = User.query.filter_by(name=username).first()
+        if existing_user:
+            print(f"{username}已經存在")
+            continue
+        new_user = User(name=username,
+                        password=password, is_admin=False)
+        user_list.append(new_user)
+    session = db.session
+    session.add_all(user_list)
+    session.commit()
+    return "Add Dummy User Sucess"
+
+
 @app.route("/api/admin/read_item_info", methods=["GET"])
 def read_item_info():
+    from sqlalchemy.sql.expression import func
+    VIDEO_COUNTS = 100
     with open(app.static_folder+"/item_info.csv", mode='r', encoding="UTF-8", newline='') as csv_file:
-        reader = csv.DictReader(csv_file)
+        reader = list(csv.DictReader(csv_file))
         session = db.session
         videos = []
-        for row in list(reader)[:50]:
+        random_user = db.session.query(User.id).order_by(
+            func.random()).limit(VIDEO_COUNTS).all()
+        for row in reader[:VIDEO_COUNTS]:
             # 建立 Video 實例
             video = Video(
                 title=row["title"],
@@ -39,12 +65,14 @@ def read_item_info():
                 cover_img_name=row["item_id"],  # 替換為實際的預設路徑
                 watch_num=int(float(row["view_number"])),
                 good_num=int(float(row["thumbup_number"])),
+                author=random.choice(random_user).id,
                 tag=row["tag"],
                 share_num=int(float(row["share_number"])),
                 coin_num=int(float(row["coin_number"])),
                 description=row["description"],
             )
             videos.append(video)
+
         BATCH_SIZE = 16
         for start in range(0, len(videos), BATCH_SIZE):
             batch = videos[start:start + BATCH_SIZE]
@@ -54,7 +82,6 @@ def read_item_info():
     return "Admin add to User Table"
 
 
-@app.route("/api/admin/create_admin_user", methods=["GET"])
 def create_admin_user():
     data = dict(
         user_name="admin",
