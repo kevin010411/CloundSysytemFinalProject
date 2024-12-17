@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title> YouNiCon</title>
+    <style>
+        .other{
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="other">
+    <form action="/your_mom" method="post">
+        <input type="text" placeholder="search video">
+        <button onclick="search()">search</button>
+    </form>
+    {% if login %}
+    <a href="/"><button>Logout</button></a>
+    {% else %}
+    <a href="/login"><button>Login</button></a>
+    {% endif %}
+    </div>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <div class="video">
+                    {% for video in video_data %}
+                    <a href="/video/{{video.id}}"><img width="192" hegiht="108" src={{url_for('static', filename="cover/"~video.cover_img_name~".jpg")}}></a>
+                    <a href="/video/{{video.id}}"><p>{{ video.title }}</p></a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

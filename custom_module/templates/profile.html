@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{user.name}}</title>
+    <style>
+        .video{
+            display: flex;
+            gap: 20px;
+        }
+        .basic-info{
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="basic-info">
+        <img width="300" hegiht="300" src={{url_for('static', filename="test.png")}}>
+        <p>{{ profile_list.name }}</p>
+    </div>
+    {% for video in video_list %}
+    <div class="video">
+        <div class="img">
+            <a href="/video/{{video.id}}"><img width="192" hegiht="108" src={{url_for('static', filename="cover/"~video.cover_img_name~".jpg")}}></a>
+        </div>
+        <div class="description">
+            <a href="/video/{{video.id}}"><p>{{ video.title }}</p></a>
+            <p>觀看次數: {{ video.watch_num }}</p>
+            <p>按讚數: {{ video.good_num }}</p>
+            <p>倒讚數: {{ video.bad_num }}</p>
+            <p>分享次數: {{ video.share_num }}</p>
+            <p>投幣數: {{ video.coin_num }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</body>
+</html>

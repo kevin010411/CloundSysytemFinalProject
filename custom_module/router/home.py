@@ -5,11 +5,30 @@ from flask import jsonify, render_template, request, redirect, session
 from custom_module import db
 
 
-@app.route("/")
+@app.route('/')
+def home():
+    login=False
+    if not session.get('login', False):
+        login=True
+    from custom_module import Video
+    video_data = db.session.query(Video).all()
+    return render_template('index.html',video_data=video_data,login=login)
+
+@app.route("/register")
 def index():
     is_admin = session.get('is_admin', False)
-    return render_template("home.html", is_admin=is_admin)
+    return render_template("register.html", is_admin=is_admin)
 
+
+@app.route("/profile/<id>")
+def profle(id):
+    if not session.get('login', False):
+        return redirect('/login')
+    else:
+        from custom_module import User,Video
+        profile_list=User.query.filter_by(id=id).first()
+        video_list=Video.query.filter_by(author=id).all()
+        return render_template('profile.html',profile_list=profile_list,video_list=video_list)
 
 @app.route("/user_list")
 def user_list():
