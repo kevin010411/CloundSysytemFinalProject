@@ -7,12 +7,13 @@ from custom_module import db
 
 @app.route('/')
 def home():
-    login=False
-    if not session.get('login', False):
-        login=True
+    user_name = session.get('user_name', None)
+    user_id = session.get('user_id', None)
+
     from custom_module import Video
     video_data = db.session.query(Video).all()
-    return render_template('index.html',video_data=video_data,login=login)
+    return render_template('index.html', video_data=video_data, user_id=user_id, user_name=user_name)
+
 
 @app.route("/register")
 def index():
@@ -22,13 +23,14 @@ def index():
 
 @app.route("/profile/<id>")
 def profle(id):
-    if not session.get('login', False):
-        return redirect('/login')
+    if not session.get('user_id', False):
+        return f"User_{id} Not Found"
     else:
-        from custom_module import User,Video
-        profile_list=User.query.filter_by(id=id).first()
-        video_list=Video.query.filter_by(author=id).all()
-        return render_template('profile.html',profile_list=profile_list,video_list=video_list)
+        from custom_module import User, Video
+        profile_list = User.query.filter_by(id=id).first()
+        video_list = Video.query.filter_by(author=id).all()
+        return render_template('profile.html', profile_list=profile_list, video_list=video_list)
+
 
 @app.route("/user_list")
 def user_list():
@@ -58,18 +60,27 @@ def login_post():
     user_data = db_session.query(User).filter_by(name=username).first()
     if user_data:
         if username == user_data.name and password == user_data.password:
-            session['login'] = True
-            session['is_admin'] = user_data.is_admin
+            session['user_name'] = username
+            session['user_id'] = user_data.id
             return redirect('/')
 
     return render_template('login.html', error='Invalid username or password')
 
 
+@app.route('/logout', methods=['POST'])
+def user_logout():
+    session.pop('user_name', "Error User")
+    session.pop('user_id', "Error Id")
+    return redirect("/")
+
+
 @app.route('/video/<video_id>', methods=['GET'])
 def video_get(video_id):
-    from custom_module import Video
+    from custom_module import Video, User
     video_data = db.session.query(Video).filter_by(id=video_id).first()
-    return render_template('video.html', video_data=video_data)
+    video_owner = db.session.query(User).filter_by(
+        id=video_data.author).first()
+    return render_template('video.html', video_data=video_data, video_owner=video_owner)
 
 
 @app.route('/update/<int:video_id>', methods=['POST'])

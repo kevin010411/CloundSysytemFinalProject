@@ -79,7 +79,7 @@ def read_item_info():
             session.bulk_save_objects(batch)  # 批量插入資料
             session.commit()
 
-    return "Admin add to User Table"
+    return "add Video and Connect to User"
 
 
 def create_admin_user():

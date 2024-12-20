@@ -98,7 +98,14 @@
         <source src={{url_for("static",filename="video/"~video_data.video_name)}} type="video/mp4">
         Your browser does not support the video tag.
     </video>
-    
+    <div style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+        <div class="user-info">
+            <a href="/profile/{{ video_owner.id }}" style="text-decoration: none; color: black;">
+                <span style="cursor: pointer; font-size: 16px;">{{ video_owner.name }}</span>
+            </a>
+        </div>
+    </div>
+    <br>
     <div class="controls">
         <span id="watchCount">觀看次數:{{video_data.watch_num}}</span>
         <button id="likeButton">👍 Like</button>
