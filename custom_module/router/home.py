@@ -27,9 +27,8 @@ def profle(id):
         return f"User_{id} Not Found"
     else:
         from custom_module import User, Video
-        profile_list = User.query.filter_by(id=id).first()
-        video_list = Video.query.filter_by(author=id).all()
-        return render_template('profile.html', profile_list=profile_list, video_list=video_list)
+        profile = User.query.filter_by(id=id).first()
+        return render_template('profile.html', profile=profile)
 
 
 @app.route("/user_list")
@@ -78,9 +77,7 @@ def user_logout():
 def video_get(video_id):
     from custom_module import Video, User
     video_data = db.session.query(Video).filter_by(id=video_id).first()
-    video_owner = db.session.query(User).filter_by(
-        id=video_data.author).first()
-    return render_template('video.html', video_data=video_data, video_owner=video_owner)
+    return render_template('video.html', video_data=video_data)
 
 
 @app.route('/update/<int:video_id>', methods=['POST'])

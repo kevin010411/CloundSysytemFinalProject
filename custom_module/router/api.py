@@ -23,6 +23,13 @@ def upload_video():
         return render_template('upload.html', filename=filename)
 
 
+@app.route('/api/check_user_login', methods=['POST'])
+def check_user_login():
+    from flask import session
+
+    return {"user_id": session.get('user_id', False)}
+
+
 @app.route('/api/register_user', methods=["POST"])
 def register_user():
     from custom_module import User, db
@@ -34,15 +41,14 @@ def register_user():
     return {"status": "Good"}
 
 
-@app.route('/api/comments/<video_id>', methods=["GET"])
+@app.route('/api/video_comments/<video_id>', methods=["GET"])
 def get_commend(video_id):
     from custom_module import Comment
     try:
         # 查詢對應影片的所有留言
         comments = Comment.query.filter_by(video_id=video_id).all()
-
         # 建立巢狀結構
-        comment_dict = {c.id: {"id": c.id, "content": c.content, "user_name": c.user_name,
+        comment_dict = {c.id: {"id": c.id, "content": c.content, "user_name": c.user.name,
                                "created_at": c.created_at, "replies": []} for c in comments}
 
         # 配置巢狀關係
@@ -59,20 +65,20 @@ def get_commend(video_id):
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/api/comments/<video_id>', methods=['POST'])
+@app.route('/api/video_comments/<video_id>', methods=['POST'])
 def add_comment(video_id):
     from custom_module import Comment, db
     data = request.json
     parent_id = data.get('parent_id')  # 父留言 ID，為 NULL 表示主留言
     content = data['content']
-    user_name = data['user_name']
+    user_id = data['user_id']
     try:
         # 新增留言到資料庫
         new_comment = Comment(
             video_id=video_id,
             parent_id=parent_id,
             content=content,
-            user_name=user_name
+            user_id=user_id
         )
         db.session.add(new_comment)
         db.session.commit()
@@ -81,3 +87,20 @@ def add_comment(video_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/post/<int:post_id>/add_comment", methods=["POST"])
+def add_post_comment(post_id):
+    from flask import session
+    from custom_module import Comment, db, Post
+
+    comment = request.form["comment"]
+    user_id = session["user_id"]
+    new_comment = Comment(user_id=user_id, content=comment, post_id=post_id)
+    db.session.add(new_comment)
+
+    # 更新文章的留言數量
+    post = Post.query.get(post_id)
+    post.comment_count += 1
+    db.session.commit()
+    return redirect(f"/post/{post_id}")

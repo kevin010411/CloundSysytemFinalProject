@@ -3,36 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{profile_list.name}}</title>
+    <title>{{ profile.name }} 的個人頁面</title>
     <style>
-        .video{
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .navbar {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: white;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-buttons button {
+            padding: 10px 15px;
+            font-size: 14px;
+            border: 1px solid #0073e6;
+            background-color: #fff;
+            color: #0073e6;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-buttons button.active {
+            background-color: #0073e6;
+            color: #fff;
+        }
+
+        .nav-buttons button:hover {
+            background-color: #005bb5;
+            color: white;
+        }
+
+        .basic-info {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .basic-info img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            margin-right: 20px;
+        }
+
+        .basic-info p {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
         }
-        .basic-info{
-            display: flex;
+
+        .video-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .video-card img {
+            width: 100%;
+            height: auto;
+        }
+
+        .video-description {
+            padding: 15px;
+        }
+
+        .video-description a {
+            text-decoration: none;
+            color: #0073e6;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .video-description p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
         }
     </style>
 </head>
 <body>
-    <div class="basic-info">
-        <img width="300" hegiht="300" src={{url_for('static', filename="test.png")}}>
-        <p>{{ profile_list.name }}</p>
-    </div>
-    {% for video in video_list %}
-    <div class="video">
-        <div class="img">
-            <a href="/video/{{video.id}}"><img width="192" hegiht="108" src={{url_for('static', filename="cover/"~video.cover_img_name~".jpg")}}></a>
+    <div class="container">
+        <!-- User Profile Section -->
+        <div class="basic-info">
+            <img src={{url_for('static', filename="test.png")}} alt="User Avatar">
+            <p>{{ profile.name }}</p>
         </div>
-        <div class="description">
-            <a href="/video/{{video.id}}"><p>{{ video.title }}</p></a>
-            <p>觀看次數: {{ video.watch_num }}</p>
-            <p>按讚數: {{ video.good_num }}</p>
-            <p>倒讚數: {{ video.bad_num }}</p>
-            <p>分享次數: {{ video.share_num }}</p>
-            <p>投幣數: {{ video.coin_num }}</p>
+        <!-- Navigation Bar -->
+        <div class="navbar">
+            <div class="nav-buttons">
+                <button id="videoButton" class="active" onclick="switchTab('video')">影片</button>
+                <button id="socialButton" onclick="switchTab('social')">社群</button>
+            </div>
+        </div>
+        <!-- Video Grid Section -->
+        <div id="videoTab" class="video-grid">
+            {% for video in profile.videos %}
+            <div class="video-card">
+                <a href="/video/{{video.id}}">
+                    <img src={{url_for('static', filename="cover/"~video.cover_img_name~".jpg")}} alt="{{ video.title }}">
+                </a>
+                <div class="video-description">
+                    <a href="/video/{{video.id}}">{{ video.title }}</a>
+                    <p>觀看次數: {{ video.watch_num }}</p>
+                    <p>按讚數: {{ video.good_num }}</p>
+                    <p>倒讚數: {{ video.bad_num }}</p>
+                    <p>分享次數: {{ video.share_num }}</p>
+                    <p>投幣數: {{ video.coin_num }}</p>
+                </div>
+            </div>
+            {% endfor %} 
+        </div>
+
+        <!-- Social Tab Section -->
+        <div id="socialTab" style="display: none;">
+            <h4>社群留言區</h4>
+            {% for post in social_posts %}
+            <div class="post">
+                <h5>{{ post.title }}</h5>
+                <p>{{ post.content }}</p>
+                <!-- 留言區域 -->
+                <div class="comment-section">
+                    {% for comment in post.comments %}
+                    <div class="comment">
+                        <strong>{{ comment.user_name }}:</strong> {{ comment.text }}
+                    </div>
+                    {% endfor %}
+                    <form action="/post/{{post.id}}/add_comment" method="post">
+                        <textarea name="comment" rows="3" placeholder="輸入您的留言..." required></textarea>
+                        <button type="submit">送出留言</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
-    {% endfor %}
+
+    <script>
+        function switchTab(tab) {
+            const videoTab = document.getElementById("videoTab");
+            const socialTab = document.getElementById("socialTab");
+            const videoButton = document.getElementById("videoButton");
+            const socialButton = document.getElementById("socialButton");
+
+            if (tab === "video") {
+                videoTab.style.display = "grid";
+                socialTab.style.display = "none";
+                videoButton.classList.add("active");
+                socialButton.classList.remove("active");
+            } else if (tab === "social") {
+                videoTab.style.display = "none";
+                socialTab.style.display = "block";
+                socialButton.classList.add("active");
+                videoButton.classList.remove("active");
+            }
+        }
+    </script>
 </body>
 </html>
