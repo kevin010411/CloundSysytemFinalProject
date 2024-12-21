@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title>{{ profile.name }} 的個人頁面</title>
     <style>
         body {
@@ -211,9 +212,35 @@
         button[type="submit"]:hover {
             background-color: #005bb5;
         }
+
+        .top-bar {
+            background-color: #333; /* 深灰色背景 */
+            padding: 10px 20px; /* 上下10px，左右20px的間距 */
+            display: flex; /* 使用Flexbox來排列元素 */
+            align-items: center; /* 垂直居中 */
+            justify-content: space-between; /* 左右對齊 */
+        }
+
+        .logo img {
+            height: 120px; /* 設定Logo的高度 */
+            margin-right: 10px;
+        }
+        .site-name {
+            font-size: 32px; /* 設定網站名稱的字體大小 */
+            color: white; /* 字體顏色為白色 */
+            font-weight: bold; /* 設定字體為粗體 */
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
+    <div class="top-bar">
+        <!-- Logo區域 -->
+        <a class="logo" href='/'>
+            <img src={{url_for('static', filename="webLogo.jpg")}}/>
+            <p class="site-name">YouNiCon<p>
+        </a>
+    </div>
     <div class="container">
         <!-- User Profile Section -->
         <div class="basic-info">

@@ -5,8 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="login.css">
+    <style>
+        .top-bar {
+            background-color: #333; /* 深灰色背景 */
+            padding: 10px 20px; /* 上下10px，左右20px的間距 */
+            display: flex; /* 使用Flexbox來排列元素 */
+            align-items: center; /* 垂直居中 */
+            justify-content: space-between; /* 左右對齊 */
+        }
+
+        .logo img {
+            height: 120px; /* 設定Logo的高度 */
+            margin-right: 10px;
+        }
+        .site-name {
+            font-size: 32px; /* 設定網站名稱的字體大小 */
+            color: white; /* 字體顏色為白色 */
+            font-weight: bold; /* 設定字體為粗體 */
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
+    <div class="top-bar">
+        <!-- Logo區域 -->
+        <a class="logo" href='/'>
+            <img src={{url_for('static', filename="webLogo.jpg")}}/>
+            <p class="site-name">YouNiCon<p>
+        </a>
+    </div>
     <div class="login-container">
         <form method="post" class="login-form">
             <h1>Login</h1>
