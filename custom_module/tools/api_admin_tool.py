@@ -50,7 +50,7 @@ def create_dummy_user():
 @app.route("/api/admin/read_item_info", methods=["GET"])
 def read_item_info():
     from sqlalchemy.sql.expression import func
-    VIDEO_COUNTS = 100
+    VIDEO_COUNTS = request.args.get("counts", default=100, type=int)
     with open(app.static_folder+"/item_info.csv", mode='r', encoding="UTF-8", newline='') as csv_file:
         reader = list(csv.DictReader(csv_file))
         session = db.session
