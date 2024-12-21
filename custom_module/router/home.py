@@ -11,7 +11,10 @@ def home():
     user_id = session.get('user_id', None)
 
     from custom_module import Video
-    video_data = db.session.query(Video).all()
+    from sqlalchemy.sql.expression import func
+
+    video_data = db.session.query(Video).order_by(
+        func.random()).all()
     return render_template('index.html', video_data=video_data, user_id=user_id, user_name=user_name)
 
 
