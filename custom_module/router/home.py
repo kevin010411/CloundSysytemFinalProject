@@ -23,14 +23,15 @@ def index():
 
 @app.route("/profile/<id>")
 def profle(id):
-    if not session.get('user_id', False):
+
+    from custom_module import User, Post
+    profile = User.query.filter_by(id=id).first()
+    if not profile:
         return f"User_{id} Not Found"
     else:
-        from custom_module import User, Post
-        profile = User.query.filter_by(id=id).first()
         posts = sorted(
             profile.posts, key=lambda post: post.created_at, reverse=True)
-        return render_template('profile.html', profile=profile, social_posts=posts)
+    return render_template('profile.html', profile=profile, social_posts=posts)
 
 
 @app.route("/add_post", methods=["POST"])

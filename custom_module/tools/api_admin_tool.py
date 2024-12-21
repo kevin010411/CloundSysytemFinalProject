@@ -53,6 +53,7 @@ def read_item_info():
     VIDEO_COUNTS = request.args.get("counts", default=100, type=int)
     with open(app.static_folder+"/item_info.csv", mode='r', encoding="UTF-8", newline='') as csv_file:
         reader = list(csv.DictReader(csv_file))
+        random.shuffle(reader)
         session = db.session
         videos = []
         random_user = db.session.query(User.id).order_by(
