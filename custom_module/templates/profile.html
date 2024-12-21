@@ -121,6 +121,96 @@
             font-size: 14px;
             color: #666;
         }
+        .create-post {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .create-post textarea {
+            width: 97%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            resize: vertical;
+        }
+
+        .create-post button[type="submit"] {
+            padding: 10px 15px;
+            border: none;
+            background-color: #0073e6;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .create-post button[type="submit"]:hover {
+            background-color: #005bb5;
+        }
+
+        .comment-section {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .comment strong {
+            color: #0073e6;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 14px;
+            resize: none;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #0073e6;
+            box-shadow: inset 0 1px 3px rgba(0, 115, 230, 0.2);
+        }
+
+        button[type="submit"] {
+            background-color: #0073e6;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #005bb5;
+        }
     </style>
 </head>
 <body>
@@ -157,20 +247,28 @@
         </div>
 
         <!-- Social Tab Section -->
-        <div id="socialTab" style="display: none;">
+         <div id="socialTab" style="display: none;">
             <h4>社群留言區</h4>
+            <!-- 新增Post表單 -->
+            <div class="create-post">
+                <form action="/add_post" method="post">
+                    <textarea name="post_title" rows="1" placeholder="輸入標題..." required></textarea>
+                    <textarea name="post_content" rows="3" placeholder="輸入內容..." required></textarea>
+                    <button type="submit">發布貼文</button>
+                </form>
+            </div>
             {% for post in social_posts %}
-            <div class="post">
+            <div class="social-post">
                 <h5>{{ post.title }}</h5>
                 <p>{{ post.content }}</p>
                 <!-- 留言區域 -->
                 <div class="comment-section">
                     {% for comment in post.comments %}
                     <div class="comment">
-                        <strong>{{ comment.user_name }}:</strong> {{ comment.text }}
+                        <strong>{{ comment.user.name }}:</strong> {{ comment.content }}
                     </div>
                     {% endfor %}
-                    <form action="/post/{{post.id}}/add_comment" method="post">
+                    <form  action="/api/post_comment/{{ post.id }}" method="post">
                         <textarea name="comment" rows="3" placeholder="輸入您的留言..." required></textarea>
                         <button type="submit">送出留言</button>
                     </form>

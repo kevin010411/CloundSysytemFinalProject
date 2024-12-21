@@ -26,9 +26,37 @@ def profle(id):
     if not session.get('user_id', False):
         return f"User_{id} Not Found"
     else:
-        from custom_module import User, Video
+        from custom_module import User, Post
         profile = User.query.filter_by(id=id).first()
-        return render_template('profile.html', profile=profile)
+        posts = sorted(
+            profile.posts, key=lambda post: post.created_at, reverse=True)
+        return render_template('profile.html', profile=profile, social_posts=posts)
+
+
+@app.route("/add_post", methods=["POST"])
+def add_post():
+    from custom_module import User, Post
+    from flask import url_for
+
+    if "user_name" not in session:
+        return redirect(url_for("index"))  # 未登入的用戶無法發布
+
+    post_title = request.form.get("post_title")
+    post_content = request.form.get("post_content")
+    user_name = session["user_name"]
+    next_url = request.referrer.split(request.host_url)[-1]
+    if post_title and post_content:
+        # 獲取當前用戶
+        user = User.query.filter_by(name=user_name).first()
+        if user:
+            new_post = Post(
+                user_id=user.id,
+                title=post_title,
+                content=post_content
+            )
+            db.session.add(new_post)
+            db.session.commit()
+    return redirect(next_url)
 
 
 @app.route("/user_list")

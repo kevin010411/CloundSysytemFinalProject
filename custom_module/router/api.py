@@ -66,7 +66,7 @@ def get_commend(video_id):
 
 
 @app.route('/api/video_comments/<video_id>', methods=['POST'])
-def add_comment(video_id):
+def add_video_comment(video_id):
     from custom_module import Comment, db
     data = request.json
     parent_id = data.get('parent_id')  # 父留言 ID，為 NULL 表示主留言
@@ -89,13 +89,18 @@ def add_comment(video_id):
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/post/<int:post_id>/add_comment", methods=["POST"])
+@app.route("/api/post_comment/<int:post_id>", methods=["POST"])
 def add_post_comment(post_id):
-    from flask import session
-    from custom_module import Comment, db, Post
+    from flask import session, redirect
+    from custom_module import Comment, db, Post, User
 
+    next_url = request.referrer.split(request.host_url)[-1]
     comment = request.form["comment"]
     user_id = session["user_id"]
+    if not user_id:
+        return redirect("/"+next_url)
+
+    user = db.session.query(User).filter_by(id=user_id).first()
     new_comment = Comment(user_id=user_id, content=comment, post_id=post_id)
     db.session.add(new_comment)
 
@@ -103,4 +108,4 @@ def add_post_comment(post_id):
     post = Post.query.get(post_id)
     post.comment_count += 1
     db.session.commit()
-    return redirect(f"/post/{post_id}")
+    return redirect("/"+next_url)
