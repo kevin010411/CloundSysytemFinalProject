@@ -252,6 +252,7 @@
             <!-- 新增Post表單 -->
             <div class="create-post">
                 <form action="/add_post" method="post">
+                    <input type='text' name="user_id" value="{{profile.id}}" hidden>
                     <textarea name="post_title" rows="1" placeholder="輸入標題..." required></textarea>
                     <textarea name="post_content" rows="3" placeholder="輸入內容..." required></textarea>
                     <button type="submit">發布貼文</button>

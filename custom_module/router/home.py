@@ -12,16 +12,31 @@ def home():
 
     from custom_module import Video
     from sqlalchemy.sql.expression import func
-
     video_data = db.session.query(Video).order_by(
         func.random()).all()
     return render_template('index.html', video_data=video_data, user_id=user_id, user_name=user_name)
 
 
+@app.route('/', methods=["POST"])
+def search_keyword():
+    user_name = session.get('user_name', None)
+    user_id = session.get('user_id', None)
+
+    from custom_module import Video
+    from sqlalchemy.sql.expression import func
+    keyword = request.form.get("search")
+    if keyword == "":
+        video_data = db.session.query(Video).order_by(
+            func.random()).all()
+    else:
+        video_data = db.session.query(Video).filter((Video.title.like(f"%{keyword}%"))).order_by(
+            func.random()).all()
+    return render_template('index.html', video_data=video_data, user_id=user_id, user_name=user_name)
+
+
 @app.route("/register")
 def index():
-    is_admin = session.get('is_admin', False)
-    return render_template("register.html", is_admin=is_admin)
+    return render_template("register.html")
 
 
 @app.route("/profile/<id>")
@@ -47,14 +62,13 @@ def add_post():
 
     post_title = request.form.get("post_title")
     post_content = request.form.get("post_content")
-    user_name = session["user_name"]
+    user_id = request.form.get("user_id")
     next_url = request.referrer.split(request.host_url)[-1]
     if post_title and post_content:
         # 獲取當前用戶
-        user = User.query.filter_by(name=user_name).first()
-        if user:
+        if user_id:
             new_post = Post(
-                user_id=user.id,
+                user_id=user_id,
                 title=post_title,
                 content=post_content
             )
